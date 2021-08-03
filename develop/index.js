@@ -1,6 +1,14 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 
+const initQuestions = [
+  {
+    type: `confirm`,
+    message: `Do you have employees to add?`,
+    name: `empConfirm`,
+  }
+]
+
 const teamManager = [
   {
     type: `input`,
@@ -36,7 +44,7 @@ const teamEngineer = [
   },
   {
     type: `input`,
-    mesage: `What is the employee's email address?`,
+    message: `What is the employee's email address?`,
     name: `engineerEmail`
   },
   {
@@ -68,7 +76,27 @@ const teamIntern = [
   }
 ];
 
-function init() { 
+function init() {
+  inquirer
+    .prompt(initQuestions)
+    
+    .then((answer => {
+      console.log(answer);
+      if (answer.empConfirm) {
+      empQuestions();
+      } else if (!answer.empConfirm) {
+      console.log(`Please run again when you have employees to add`);
+      return;
+      }
+    }));
+
+    fs.writeFile(`index.html`, `<h1>PLACEHOLDER for HTML</h1>`, (error,data) =>
+      error ? console.error(error) : console.log(data)
+    );
+    
+};
+
+function empQuestions() { 
   inquirer
     .prompt(teamManager)
     .then((answer) => {
@@ -81,7 +109,25 @@ function init() {
         console.log(`Something else went wrong`);
       }
     })
-}
+};
+
+function engQuestions() { 
+  inquirer
+    .prompt(teamEngineer)
+    .then((answer) => {
+      console.log(answer)
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        console.error(error);
+      } else {
+        console.log(`Something else went wrong`);
+      }
+    })
+};
+
+
+
 
 
 init();
